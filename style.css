@@ -136,7 +136,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 800; line-height: 1.
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 72px;
+  padding: 14px 0;
   gap: 24px;
 }
 .logo {
@@ -152,7 +152,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 800; line-height: 1.
 }
 .logo span { color: rgba(255,255,255,0.7); font-weight: 500; }
 .logo-img {
-  height: 34px;
+  height: 136px;
   width: auto;
   display: block;
 }
@@ -195,7 +195,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 800; line-height: 1.
   position: relative;
   background: var(--bg);
   overflow: hidden;
-  padding: 130px 0 170px;
+  padding: 220px 0 170px;
 }
 .hero-scroll-inner {
   perspective: 1200px;
@@ -253,7 +253,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 800; line-height: 1.
     font-size: clamp(2.6rem, 4.4vw, 4.6rem);
   }
   .hero-scroll-header .hero-logo-img {
-    height: clamp(56px, 6vw, 96px);
+    height: clamp(130px, 15vw, 230px);
   }
   .hero-scroll-card {
     width: min(420px, 36vw);
@@ -334,7 +334,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 800; line-height: 1.
 }
 .hero-logo-img {
   display: block;
-  height: clamp(64px, 11vw, 130px);
+  height: clamp(120px, 24vw, 300px);
   width: auto;
   margin: 0 auto;
 }
@@ -840,6 +840,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 800; line-height: 1.
 }
 
 @media (max-width: 700px) {
+  .logo-img { height: 44px; }
   .nav { display: none; }
   .nav-toggle { display: block; }
   .nav.open {
