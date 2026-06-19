@@ -160,39 +160,6 @@ nav.querySelectorAll('a').forEach(link => {
   link.addEventListener('click', () => nav.classList.remove('open'));
 });
 
-// Carrusel de renders
-(function () {
-  const carousel = document.getElementById('rendersCarousel');
-  if (!carousel) return;
-  const track = carousel.querySelector('.carousel-track');
-  const slides = Array.from(carousel.querySelectorAll('.carousel-slide'));
-  const thumbs = Array.from(carousel.querySelectorAll('.carousel-thumb'));
-  const prevBtn = carousel.querySelector('.carousel-prev');
-  const nextBtn = carousel.querySelector('.carousel-next');
-  let index = 0;
-
-  function goTo(i) {
-    index = (i + slides.length) % slides.length;
-    track.style.transform = `translateX(-${index * 100}%)`;
-    thumbs.forEach((t, ti) => t.classList.toggle('is-active', ti === index));
-  }
-
-  prevBtn.addEventListener('click', () => goTo(index - 1));
-  nextBtn.addEventListener('click', () => goTo(index + 1));
-  thumbs.forEach((t, ti) => t.addEventListener('click', () => goTo(ti)));
-
-  let startX = null;
-  track.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
-  track.addEventListener('touchend', (e) => {
-    if (startX === null) return;
-    const diff = e.changedTouches[0].clientX - startX;
-    if (Math.abs(diff) > 40) goTo(index + (diff < 0 ? 1 : -1));
-    startX = null;
-  });
-
-  goTo(0);
-})();
-
 // Lightbox para renders y plano
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightboxImg');
