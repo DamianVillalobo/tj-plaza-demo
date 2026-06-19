@@ -238,12 +238,15 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 800; line-height: 1.
   }
   .hero-scroll-header {
     text-align: left;
-    max-width: 460px;
+    max-width: 600px;
     margin: 0;
-    flex-shrink: 0;
+    flex: 1 1 auto;
   }
   .hero-scroll-header .eyebrow {
     margin-top: 0;
+  }
+  .hero-scroll-header .hero-title-brand {
+    font-size: clamp(2.6rem, 4.4vw, 4.6rem);
   }
   .hero-scroll-header .hero-sub {
     margin-left: 0;
