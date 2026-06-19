@@ -195,7 +195,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 800; line-height: 1.
   position: relative;
   background: var(--bg);
   overflow: hidden;
-  padding: 220px 0 170px;
+  padding: 220px 0 60px;
 }
 .hero-scroll-inner {
   perspective: 1200px;
@@ -245,7 +245,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 800; line-height: 1.
   }
   .hero-scroll-header {
     text-align: center;
-    max-width: 600px;
+    max-width: 720px;
     margin: 0 auto;
     flex: 1 1 auto;
   }
@@ -253,7 +253,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 800; line-height: 1.
     font-size: clamp(2.6rem, 4.4vw, 4.6rem);
   }
   .hero-scroll-header .hero-logo-img {
-    height: clamp(130px, 15vw, 230px);
+    height: clamp(260px, 30vw, 460px);
   }
   .hero-scroll-card {
     width: min(420px, 36vw);
@@ -262,7 +262,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 800; line-height: 1.
   }
 }
 @media (max-width: 700px) {
-  .hero-scroll { padding: 100px 0 120px; }
+  .hero-scroll { padding: 100px 0 60px; }
   .hero-scroll-card-inner { padding: 6px; border-radius: 22px; }
   .hero-scroll-card-inner .hero-media { border-radius: 16px; }
 }
@@ -334,7 +334,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 800; line-height: 1.
 }
 .hero-logo-img {
   display: block;
-  height: clamp(120px, 24vw, 300px);
+  height: clamp(240px, 48vw, 600px);
   width: auto;
   margin: 0 auto;
 }
@@ -618,6 +618,34 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 800; line-height: 1.
     transition: none;
   }
   .gallery-item:hover { flex-grow: 0; }
+}
+
+/* Variante de la galería para los planos (fondo blanco, imagen completa) */
+.gallery-item-plano { background: #fff; }
+.gallery-item-plano img {
+  object-fit: contain;
+  padding: 28px;
+  background: #fff;
+}
+.gallery-item-caption {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 7px 16px;
+  background: rgba(21,23,27,0.85);
+  border-radius: var(--radius-pill);
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #fff;
+  white-space: nowrap;
+  z-index: 2;
+}
+@media (max-width: 700px) {
+  .gallery-item-plano img { padding: 18px; }
 }
 
 /* Tour 360 */
