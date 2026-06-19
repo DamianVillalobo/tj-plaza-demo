@@ -152,6 +152,38 @@ if (typeof avanceObra !== 'undefined') {
   }
 })();
 
+// Acordeón de características (generales / construcción): ocultas por defecto
+(function () {
+  const items = Array.from(document.querySelectorAll('.accordion-item'));
+  if (!items.length) return;
+
+  items.forEach(item => {
+    const trigger = item.querySelector('.accordion-trigger');
+    const panel = item.querySelector('.accordion-panel');
+    if (!trigger || !panel) return;
+
+    trigger.addEventListener('click', () => {
+      const isOpen = item.classList.contains('is-open');
+      if (isOpen) {
+        panel.style.maxHeight = '0px';
+        item.classList.remove('is-open');
+        trigger.setAttribute('aria-expanded', 'false');
+      } else {
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+        item.classList.add('is-open');
+        trigger.setAttribute('aria-expanded', 'true');
+      }
+    });
+
+    // Si la ventana cambia de tamaño mientras está abierto, recalcular alto
+    window.addEventListener('resize', () => {
+      if (item.classList.contains('is-open')) {
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+      }
+    }, { passive: true });
+  });
+})();
+
 // Menú mobile
 const navToggle = document.getElementById('navToggle');
 const nav = document.getElementById('nav');

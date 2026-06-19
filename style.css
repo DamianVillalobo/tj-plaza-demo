@@ -147,8 +147,15 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 800; line-height: 1.
   flex-shrink: 0;
   color: #fff;
   transition: color .35s ease;
+  display: flex;
+  align-items: center;
 }
 .logo span { color: rgba(255,255,255,0.7); font-weight: 500; }
+.logo-img {
+  height: 34px;
+  width: auto;
+  display: block;
+}
 .site-header.is-scrolled .logo { color: var(--ink); }
 .site-header.is-scrolled .logo span { color: var(--accent); }
 .nav {
@@ -237,24 +244,16 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 800; line-height: 1.
     padding: 0 24px;
   }
   .hero-scroll-header {
-    text-align: left;
+    text-align: center;
     max-width: 600px;
-    margin: 0;
+    margin: 0 auto;
     flex: 1 1 auto;
-  }
-  .hero-scroll-header .eyebrow {
-    margin-top: 0;
   }
   .hero-scroll-header .hero-title-brand {
     font-size: clamp(2.6rem, 4.4vw, 4.6rem);
   }
-  .hero-scroll-header .hero-sub {
-    margin-left: 0;
-    margin-right: 0;
-  }
-  .hero-scroll-header .hero-address {
-    margin-left: 0;
-    margin-right: 0;
+  .hero-scroll-header .hero-logo-img {
+    height: clamp(56px, 6vw, 96px);
   }
   .hero-scroll-card {
     width: min(420px, 36vw);
@@ -333,6 +332,12 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 800; line-height: 1.
   letter-spacing: -0.01em;
   font-size: clamp(3rem, 9vw, 6.4rem);
 }
+.hero-logo-img {
+  display: block;
+  height: clamp(64px, 11vw, 130px);
+  width: auto;
+  margin: 0 auto;
+}
 .hero-sub {
   font-size: clamp(1.05rem, 2vw, 1.3rem);
   margin-top: 18px;
@@ -395,6 +400,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 800; line-height: 1.
   align-items: start;
 }
 .proyecto-text p { margin-bottom: 18px; color: var(--ink-soft); font-size: 1.02rem; }
+.proyecto-text-full { max-width: 720px; }
 .entrega-badge {
   display: inline-flex;
   flex-direction: column;
@@ -422,17 +428,71 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 800; line-height: 1.
   flex-shrink: 0;
 }
 
-/* Características (merged into Proyecto) */
-.caracteristicas-block {
-  margin-top: 140px;
-  padding-top: 80px;
+/* Características generales / de construcción: acordeón colapsable */
+.caracteristicas-accordion {
+  margin-top: 56px;
+  padding-top: 40px;
   border-top: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  flex-direction: column;
 }
-.caracteristicas-block h3 {
-  font-size: clamp(1.4rem, 2.2vw, 1.8rem);
-  margin-bottom: 28px;
+.accordion-item {
+  border-bottom: 1px solid rgba(255,255,255,0.1);
 }
-
+.accordion-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: none;
+  border: none;
+  padding: 22px 0;
+  margin: 0;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: var(--ink);
+}
+.accordion-trigger h3 {
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  margin: 0;
+  font-weight: 600;
+}
+.accordion-icon {
+  position: relative;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+}
+.accordion-icon::before,
+.accordion-icon::after {
+  content: "";
+  position: absolute;
+  background: var(--accent);
+  transition: transform .3s ease;
+}
+.accordion-icon::before {
+  top: 50%; left: 0;
+  width: 100%; height: 2px;
+  transform: translateY(-50%);
+}
+.accordion-icon::after {
+  left: 50%; top: 0;
+  width: 2px; height: 100%;
+  transform: translateX(-50%);
+}
+.accordion-item.is-open .accordion-icon::after {
+  transform: translateX(-50%) scaleY(0);
+}
+.accordion-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .35s ease;
+}
+.accordion-panel-inner {
+  padding-bottom: 32px;
+}
 /* Specs */
 .specs-grid {
   display: grid;
