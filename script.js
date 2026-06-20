@@ -87,6 +87,122 @@ document.getElementById('year').textContent = new Date().getFullYear();
   update();
 })();
 
+// Hero: fondo animado con shader WebGL ("nubes" generativas), recreado en vanilla
+// JS/WebGL2 a partir de un componente de referencia React, retinteado en los tonos
+// dorado/oscuro del sitio (en vez del naranja/amarillo original) y sin frameworks.
+// Va detrás de la tarjeta de video, que no se toca.
+(function () {
+  const canvas = document.getElementById('heroShaderCanvas');
+  const stage = document.getElementById('heroScroll');
+  if (!canvas || !stage) return;
+
+  const gl = canvas.getContext('webgl2');
+  if (!gl) { canvas.remove(); return; } // sin soporte: queda el fondo plano de siempre
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const vertexSrc = `#version 300 es
+precision highp float;
+in vec4 position;
+void main(){gl_Position=position;}`;
+
+  // Mismo algoritmo de "nubes" fractales del componente original; sólo se retinta
+  // el color final (antes naranja/amarillo) a los tonos dorado/carbón del sitio
+  // y se reduce la velocidad para que funcione bien como fondo decorativo.
+  const fragmentSrc = `#version 300 es
+precision highp float;
+out vec4 O;
+uniform vec2 resolution;
+uniform float time;
+#define FC gl_FragCoord.xy
+#define T time
+#define R resolution
+#define MN min(R.x,R.y)
+float rnd(vec2 p){p=fract(p*vec2(12.9898,78.233));p+=dot(p,p+34.56);return fract(p.x*p.y);}
+float noise(in vec2 p){vec2 i=floor(p),f=fract(p),u=f*f*(3.-2.*f);float a=rnd(i),b=rnd(i+vec2(1,0)),c=rnd(i+vec2(0,1)),d=rnd(i+1.);return mix(mix(a,b,u.x),mix(c,d,u.x),u.y);}
+float fbm(vec2 p){float t=.0,a=1.;mat2 m=mat2(1.,-.5,.2,1.2);for(int i=0;i<5;i++){t+=a*noise(p);p*=2.*m;a*=.5;}return t;}
+float clouds(vec2 p){float d=1.,t=.0;for(float i=.0;i<3.;i++){float a=d*fbm(i*10.+p.x*.2+.2*(1.+i)*p.y+d+i*i+p);t=mix(t,d,a);d=a;p*=2./(i+1.);}return t;}
+void main(void){
+  vec2 uv=(FC-.5*R)/MN, st=uv*vec2(2,1);
+  vec3 col=vec3(0);
+  float bg=clouds(vec2(st.x+T*.06,-st.y));
+  uv*=1.-.3*(sin(T*.08)*.5+.5);
+  for(float i=1.;i<12.;i++){
+    uv+=.1*cos(i*vec2(.1+.01*i,.8)+i*i+T*.08+.1*uv.x);
+    vec2 p=uv;
+    float d=length(p);
+    col+=.0009/d*vec3(0.85,0.66,0.36);
+    float b=noise(i+p+bg*1.731);
+    col+=.0014*b/length(max(p,vec2(b*p.x*.02,p.y)));
+    col=mix(col,vec3(bg*.16,bg*.13,bg*.085),d);
+  }
+  O=vec4(col,1);
+}`;
+
+  function compile(type, source) {
+    const shader = gl.createShader(type);
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      console.error('Hero shader error:', gl.getShaderInfoLog(shader));
+    }
+    return shader;
+  }
+
+  const program = gl.createProgram();
+  gl.attachShader(program, compile(gl.VERTEX_SHADER, vertexSrc));
+  gl.attachShader(program, compile(gl.FRAGMENT_SHADER, fragmentSrc));
+  gl.linkProgram(program);
+  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    console.error('Hero shader link error:', gl.getProgramInfoLog(program));
+    canvas.remove();
+    return;
+  }
+  gl.useProgram(program);
+
+  const buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, 1, -1, -1, 1, 1, 1, -1]), gl.STATIC_DRAW);
+  const positionLoc = gl.getAttribLocation(program, 'position');
+  gl.enableVertexAttribArray(positionLoc);
+  gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
+
+  const resolutionLoc = gl.getUniformLocation(program, 'resolution');
+  const timeLoc = gl.getUniformLocation(program, 'time');
+  const dpr = Math.min(1.5, window.devicePixelRatio || 1);
+
+  function resize() {
+    const rect = stage.getBoundingClientRect();
+    canvas.width = Math.max(1, Math.round(rect.width * dpr));
+    canvas.height = Math.max(1, Math.round(rect.height * dpr));
+    gl.viewport(0, 0, canvas.width, canvas.height);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function render(now) {
+    gl.clearColor(0.082, 0.090, 0.106, 1); // ~ var(--bg) #15171b
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.uniform2f(resolutionLoc, canvas.width, canvas.height);
+    gl.uniform1f(timeLoc, now * 1e-3);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  }
+
+  if (reduceMotion) {
+    render(0);
+  } else {
+    let raf = requestAnimationFrame(loop);
+    function loop(now) {
+      render(now);
+      raf = requestAnimationFrame(loop);
+    }
+    document.addEventListener('visibilitychange', () => {
+      cancelAnimationFrame(raf);
+      if (!document.hidden) raf = requestAnimationFrame(loop);
+    });
+  }
+})();
+
 // Avance de obra (círculos de progreso, datos en avance-obra.js)
 if (typeof avanceObra !== 'undefined') {
   const RADIUS = 60;
