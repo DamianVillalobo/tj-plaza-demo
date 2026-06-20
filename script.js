@@ -12,15 +12,44 @@ document.getElementById('year').textContent = new Date().getFullYear();
   onScroll();
 })();
 
-// Hero: efecto 3D al hacer scroll (estilo "ContainerScroll")
+// Hero: efecto 3D al hacer scroll (estilo "ContainerScroll") + video "scrubbed" con el scroll
 (function () {
   const container = document.getElementById('heroScroll');
   const header = document.getElementById('heroScrollHeader');
   const card = document.getElementById('heroScrollCard');
   if (!container || !header || !card) return;
 
+  const video = document.getElementById('heroScrubVideo');
+  let videoDuration = 0;
+  let videoReady = false;
+
+  if (video) {
+    const markReady = () => {
+      if (video.duration && isFinite(video.duration)) {
+        videoDuration = video.duration;
+        videoReady = true;
+      }
+    };
+    video.addEventListener('loadedmetadata', markReady);
+    if (video.readyState >= 1) markReady();
+
+    // En iOS/Safari el video no muestra frames via currentTime hasta que
+    // se "desbloquea" con un play/pause inicial (no requiere gesto del usuario
+    // porque está muted, pero sin esto algunos navegadores no pintan el canvas).
+    const unlock = () => {
+      const playPromise = video.play();
+      if (playPromise && typeof playPromise.then === 'function') {
+        playPromise.then(() => video.pause()).catch(() => {});
+      } else {
+        video.pause();
+      }
+    };
+    if (video.readyState >= 1) unlock();
+    else video.addEventListener('loadedmetadata', unlock, { once: true });
+  }
+
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduceMotion) return; // CSS ya deja header y tarjeta sin transformar
+  if (reduceMotion) return; // CSS ya deja header y tarjeta sin transformar; video queda en su poster
 
   const isMobile = () => window.innerWidth <= 700;
 
@@ -40,6 +69,10 @@ document.getElementById('year').textContent = new Date().getFullYear();
 
     header.style.transform = `translateY(${translate}px)`;
     card.style.transform = `translateY(${translate}px) rotateX(${rotate}deg) scale(${scale})`;
+
+    if (videoReady) {
+      video.currentTime = progress * videoDuration;
+    }
   }
 
   function onScroll() {
