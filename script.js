@@ -217,6 +217,112 @@ if (typeof avanceObra !== 'undefined') {
   });
 })();
 
+// Renders: carrusel en abanico (fan carousel) vanilla, inspirado en un componente
+// de referencia React/GSAP que el cliente pidió "probar" en esta sección — recreado
+// sin frameworks para que funcione igual que el resto del sitio (HTML/CSS/JS plano).
+(function () {
+  const stage = document.getElementById('rendersGallery');
+  if (!stage) return;
+  const cards = Array.from(stage.querySelectorAll('.fan-card'));
+  const total = cards.length;
+  if (!total) return;
+
+  const MAX_VISIBLE = 7;
+  const FAN_POSITIONS = [
+    { rot: -21, scale: 0.7756, x: -30, y: 7.3, z: 1 },
+    { rot: -14, scale: 0.8498, x: -22, y: 4.0, z: 2 },
+    { rot: -7,  scale: 0.9346, x: -11, y: 1.3, z: 3 },
+    { rot: 0,   scale: 1.0,    x: 0,   y: 0.0, z: 10 },
+    { rot: 7,   scale: 0.9346, x: 11,  y: 1.3, z: 3 },
+    { rot: 14,  scale: 0.8498, x: 22,  y: 4.0, z: 2 },
+    { rot: 21,  scale: 0.7756, x: 30,  y: 7.3, z: 1 },
+  ];
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function respMultiplier(w) {
+    if (w < 480) return 0.4;
+    if (w < 640) return 0.52;
+    if (w < 768) return 0.66;
+    if (w < 1024) return 0.82;
+    return 1;
+  }
+
+  function slotConfig(count, slot) {
+    if (count >= MAX_VISIBLE) return FAN_POSITIONS[slot];
+    const center = (count - 1) / 2;
+    const dist = count > 1 ? (slot - center) / center : 0;
+    const abs = Math.abs(dist);
+    return {
+      rot: dist * 21,
+      scale: 1 - 0.2244 * abs * abs,
+      x: dist * 30,
+      y: abs * abs * 7.3,
+      z: 10 - Math.round(Math.abs(slot - center)),
+    };
+  }
+
+  function applyTransform(card, cfg, mult) {
+    card.style.transform =
+      `translateX(${cfg.x * mult}rem) translateY(${cfg.y * mult}rem) rotate(${cfg.rot}deg) scale(${cfg.scale})`;
+    card.style.zIndex = cfg.z;
+  }
+
+  function layout(hoverIndex) {
+    const mult = respMultiplier(window.innerWidth);
+    cards.forEach((card, i) => {
+      const base = slotConfig(total, i);
+      let { x, y, rot, scale, z } = base;
+      if (hoverIndex !== null) {
+        if (i === hoverIndex) {
+          y -= 2.4;
+          scale *= 1.1;
+          z = 20;
+        } else {
+          const dist = Math.abs(i - hoverIndex);
+          const push = 7 * (1 + 0.25 * Math.max(0, 3 - dist));
+          if (i < hoverIndex) { x -= push; rot -= 3 / (dist + 1); }
+          else { x += push; rot += 3 / (dist + 1); }
+        }
+      }
+      applyTransform(card, { x, y, rot, scale, z }, mult);
+    });
+  }
+
+  cards.forEach((card, i) => {
+    card.style.transition = reduceMotion
+      ? 'none'
+      : 'transform .55s cubic-bezier(.22,1.12,.36,1), box-shadow .3s ease';
+    card.addEventListener('mouseenter', () => layout(i));
+  });
+  stage.addEventListener('mouseleave', () => layout(null));
+  window.addEventListener('resize', () => layout(null));
+
+  function reveal() {
+    layout(null);
+    cards.forEach((card, i) => {
+      card.style.transitionDelay = reduceMotion ? '0s' : `${i * 0.07}s`;
+      card.style.opacity = '1';
+    });
+  }
+
+  if (reduceMotion) {
+    reveal();
+  } else if ('IntersectionObserver' in window) {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          reveal();
+          obs.disconnect();
+        }
+      });
+    }, { threshold: 0.3 });
+    obs.observe(stage);
+  } else {
+    reveal();
+  }
+})();
+
 // Menú mobile
 const navToggle = document.getElementById('navToggle');
 const nav = document.getElementById('nav');
