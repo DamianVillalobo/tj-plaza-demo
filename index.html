@@ -42,20 +42,9 @@
     <canvas class="hero-shader-bg" id="heroShaderCanvas" aria-hidden="true"></canvas>
     <div class="hero-scroll-inner">
       <div class="container hero-scroll-header" id="heroScrollHeader">
-        <p class="eyebrow">En construcción</p>
         <h1 class="hero-title-brand"><img src="logo-atj.png" alt="ATJ Plaza I" class="hero-logo-img"></h1>
         <p class="hero-sub">Pisos de 4 ambientes con cochera</p>
         <p class="hero-address">Güemes - Lamadrid 2940<br>Mar del Plata, Buenos Aires</p>
-      </div>
-      <div class="hero-scroll-card" id="heroScrollCard">
-        <div class="hero-scroll-card-inner">
-          <div class="hero-media">
-            <video id="heroScrubVideo" muted playsinline preload="auto" poster="rotacion-nocturna-poster.jpg" aria-label="Video del edificio ATJ Plaza I, animado al hacer scroll">
-              <source src="rotacion-nocturna.mp4" type="video/mp4">
-            </video>
-          </div>
-          <p class="hero-scroll-card-caption">Una nueva forma de vivir en Güemes</p>
-        </div>
       </div>
     </div>
   </div>
@@ -66,12 +55,72 @@
   <div class="container">
     <p class="section-tag">El proyecto</p>
     <h2>Diseño moderno, pensado para vivir mejor</h2>
-    <div class="proyecto-text proyecto-text-full">
-      <p>Pisos de 4 ambientes con cochera en construcción en zona Güemes, un proyecto de excelente calidad y diseño moderno, pensado para brindar confort y funcionalidad.</p>
-      <p>Ubicados en una de las zonas más buscadas de la ciudad, con acceso a comercios, restaurantes y servicios, estos pisos representan una gran oportunidad de inversión o vivienda permanente.</p>
-      <div class="entrega-badge">
-        <span class="entrega-label">Entrega estimada</span>
-        <span class="entrega-fecha">Marzo 2027</span>
+
+    <div class="proyecto-grid">
+      <div class="proyecto-text">
+        <p>Pisos de 4 ambientes con cochera en construcción en zona Güemes, un proyecto de excelente calidad y diseño moderno, pensado para brindar confort y funcionalidad.</p>
+        <p>Ubicados en una de las zonas más buscadas de la ciudad, con acceso a comercios, restaurantes y servicios, estos pisos representan una gran oportunidad de inversión o vivienda permanente.</p>
+        <div class="entrega-badge">
+          <span class="entrega-label">Entrega estimada</span>
+          <span class="entrega-fecha">Marzo 2027</span>
+        </div>
+      </div>
+
+      <div class="proyecto-media">
+        <div class="video-player" id="proyectoVideoPlayer">
+          <video class="video-player-el" id="proyectoVideo" poster="construccion-poster.jpg" preload="metadata" playsinline>
+            <source src="construccion.mp4" type="video/mp4">
+          </video>
+
+          <button class="video-bigplay" type="button" aria-label="Reproducir video">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+
+          <div class="video-controls">
+            <div class="video-progress" id="videoProgress" role="slider" tabindex="0" aria-label="Progreso del video" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <div class="video-progress-track">
+                <div class="video-progress-fill" id="videoProgressFill"></div>
+                <div class="video-progress-handle" id="videoProgressHandle"></div>
+              </div>
+            </div>
+
+            <div class="video-controls-row">
+              <button class="video-btn video-play-btn" id="videoPlayBtn" type="button" aria-label="Reproducir">
+                <svg class="icon icon-play" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                <svg class="icon icon-pause" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" hidden><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+                <svg class="icon icon-replay" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" hidden><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+              </button>
+
+              <div class="video-volume" id="videoVolume">
+                <button class="video-btn video-mute-btn" id="videoMuteBtn" type="button" aria-label="Silenciar">
+                  <svg class="icon icon-vol-on" viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M3 10v4h4l5 5V5L7 10H3zm13.5 2A4.5 4.5 0 0 0 14 7.97v8.05a4.5 4.5 0 0 0 2.5-4.02z"/></svg>
+                  <svg class="icon icon-vol-off" viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true" hidden><path d="M16.5 12A4.5 4.5 0 0 0 14 7.97v2.21l2.45 2.45c.03-.2.05-.42.05-.63zM19 12c0 .94-.2 1.82-.54 2.64l1.51 1.51A8.93 8.93 0 0 0 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3 3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06a8.99 8.99 0 0 0 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4 9.91 6.09 12 8.18V4z"/></svg>
+                </button>
+                <input type="range" class="video-volume-slider" id="videoVolumeSlider" min="0" max="1" step="0.05" value="1" aria-label="Volumen">
+              </div>
+
+              <span class="video-time" id="videoTime">0:00 / 0:00</span>
+
+              <div class="video-spacer"></div>
+
+              <div class="video-speed" id="videoSpeed">
+                <button class="video-btn video-speed-btn" id="videoSpeedBtn" type="button" aria-haspopup="true" aria-expanded="false">1x</button>
+                <div class="video-speed-menu" id="videoSpeedMenu" role="menu">
+                  <button type="button" data-speed="0.5" role="menuitem">0.5x</button>
+                  <button type="button" data-speed="1" class="is-active" role="menuitem">1x</button>
+                  <button type="button" data-speed="1.5" role="menuitem">1.5x</button>
+                  <button type="button" data-speed="2" role="menuitem">2x</button>
+                </div>
+              </div>
+
+              <button class="video-btn video-fullscreen-btn" id="videoFullscreenBtn" type="button" aria-label="Pantalla completa">
+                <svg class="icon icon-fs-open" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+                <svg class="icon icon-fs-close" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true" hidden><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <p class="video-caption">Avance de obra en zona Güemes</p>
       </div>
     </div>
 
